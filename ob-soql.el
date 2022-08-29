@@ -41,9 +41,11 @@
 (defun org-babel-execute:soql (body params)
   "Execute soql in org mode."
 	 
-  (let* ((username (if (assoc :username params) (cdr (assoc :username params)) nil))
+  (let* ((username (if (assoc :username params)
+		       (cdr (assoc :username params))
+		     nil))
 	 (cmdline (format "sfdx force:data:soql:query -r csv --query \"%s\"" body))
-	 (cmdline (if username (format "%s -u '%s'" cmdline username)))
+	 (cmdline (if username (format "%s -u '%s'" cmdline username) cmdline))
 	 (err-buff (get-buffer-create "*Org-Babel error*"))
 	 (out-buff (get-buffer-create "*soql-result*")))
     (shell-command cmdline out-buff err-buff)
@@ -52,7 +54,5 @@
       (org-ctrl-c-minus)
       (buffer-string))))
 
-
-;;<<allow-scheme-execution>>
 (provide 'ob-soql)
 ;;; ob-soql.el ends here
